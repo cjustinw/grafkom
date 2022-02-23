@@ -2,7 +2,7 @@
 const canvas = document.getElementById("canvas");
 
 const gl = canvas.getContext("webgl", {
-  preserveDrawingBuffer: true
+  preserveDrawingBuffer: true,
 });
 
 gl.viewport(0, 0, canvas.width, canvas.height);
@@ -13,24 +13,25 @@ const vertex = gl.createShader(gl.VERTEX_SHADER);
 const fragment = gl.createShader(gl.FRAGMENT_SHADER);
 
 const vertexSource = [
-    'precision mediump float;',
-    '',
-    'attribute vec2 vPosition;',
-    'attribute vec3 vColor;',
-    'varying vec3 fragColor;',
-    'void main()',
-    '{',
-    'fragColor = vColor;',
-    'gl_Position = vec4(vPosition,0.0,1.0);',
-    '}'
+  "precision mediump float;",
+  "",
+  "attribute vec2 vPosition;",
+  "uniform mat4 uProjectionMatrix;",
+  "attribute vec3 vColor;",
+  "varying vec3 fragColor;",
+  "void main()",
+  "{",
+  "fragColor = vColor;",
+  "gl_Position = uProjectionMatrix * vec4(vPosition,0.0,1.0);",
+  "}",
 ].join("\n");
 
 const fragmentSource = [
-    'precision mediump float;',
-    'varying vec3 fragColor;',
-    'void main(){',
-    'gl_FragColor = vec4(fragColor, 1.0);',
-    '}'
+  "precision mediump float;",
+  "varying vec3 fragColor;",
+  "void main(){",
+  "gl_FragColor = vec4(fragColor, 1.0);",
+  "}",
 ].join("\n");
 
 gl.shaderSource(vertex, vertexSource);
@@ -58,23 +59,24 @@ if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
 const buffer = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
 
-const vPosition = gl.getAttribLocation(program, 'vPosition');
+const vPosition = gl.getAttribLocation(program, "vPosition");
 gl.vertexAttribPointer(
-  vPosition, 
-  2, 
-  gl.FLOAT, 
-  gl.FALSE, 
-  5 * Float32Array.BYTES_PER_ELEMENT, 
-  0  
+  vPosition,
+  2,
+  gl.FLOAT,
+  gl.FALSE,
+  5 * Float32Array.BYTES_PER_ELEMENT,
+  0
 );
 
-const vColor = gl.getAttribLocation(program, 'vColor');
+const vColor = gl.getAttribLocation(program, "vColor");
 gl.vertexAttribPointer(
-  vColor, 
-  3, gl.FLOAT, 
-  gl.FALSE, 
-  5 * Float32Array.BYTES_PER_ELEMENT, 
-  2 * Float32Array.BYTES_PER_ELEMENT  
+  vColor,
+  3,
+  gl.FLOAT,
+  gl.FALSE,
+  5 * Float32Array.BYTES_PER_ELEMENT,
+  2 * Float32Array.BYTES_PER_ELEMENT
 );
 
 gl.enableVertexAttribArray(vPosition);
