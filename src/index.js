@@ -6,34 +6,42 @@ const drawNewShape = () => {
   state.drawAll();
   state.setIsDrawing(false);
   state.setCoordinates([]);
-}
+};
 
-canvas.addEventListener("click", e => {
-  const {x, y} = state.getCursorCoordinate(e);
-  if (state.getCoordinatesLength() < 1) {
-    state.setIsDrawing(true);
+canvas.addEventListener("click", (e) => {
+  var cursorMode = document.getElementById("cursor-mode").value;
+  console.log(cursorMode);
+  if (cursorMode === "draw") {
+    const { x, y } = state.getCursorCoordinate(e);
+    if (state.getCoordinatesLength() < 1) {
+      state.setIsDrawing(true);
+    }
+    state.addCoordinate(x, y);
+    if (state.shape != Polygon && state.getCoordinatesLength() >= 2) {
+      drawNewShape();
+    }
+  } else {
+    state.getNearestPoint(e);
+    state.drawAll();
+
   }
-  state.addCoordinate(x, y);
-  if(state.shape != Polygon && state.getCoordinatesLength() >= 2) {
+});
+
+canvas.addEventListener("keypress", (e) => {
+  if (state.shape === Polygon && e.keyCode === 13) {
     drawNewShape();
   }
 });
 
-canvas.addEventListener("keypress", e => {
-  if(state.shape === Polygon && e.keyCode === 13){
-    drawNewShape();
-  }
-});
-
-canvas.addEventListener("mousemove", e => {
+canvas.addEventListener("mousemove", (e) => {
   if (state.isDrawing) {
     state.drawAll();
-    const {x, y} = state.getCursorCoordinate(e);
+    const { x, y } = state.getCursorCoordinate(e);
     const tempCoordinates = [...state.coordinates, new Point(x, y)];
     if (state.shape === Polygon && state.getCoordinatesLength() < 2) {
-      (new Line(tempCoordinates, state.shapeColor)).draw();
+      new Line(tempCoordinates, state.shapeColor).draw();
       return;
     }
-    (new state.shape(tempCoordinates, state.shapeColor)).draw(); 
+    new state.shape(tempCoordinates, state.shapeColor).draw();
   }
 });
