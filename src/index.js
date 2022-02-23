@@ -7,6 +7,31 @@ scalePointRange.addEventListener("change", () => {
   scaleValue.innerHTML = scalePointRange.value;
 })
 
+var shapes = document.getElementById("shapes");
+shapes.addEventListener("change", () => {
+  switch (shapes.value){
+    case ("line"):
+      state.setShape(Line);
+      break;
+    
+    case ("square"):
+      state.setShape(Square);
+      break;
+    
+    case ("rectangle"):
+      state.setShape(Rectangle);
+      break;
+
+    case ("polygon"):
+      state.setShape(Polygon);
+      break;
+    
+    default:
+      state.setShape(Line);
+      break;
+  }
+})
+
 const drawNewShape = () => {
   state.addShape();
   state.drawAll();

@@ -3,7 +3,7 @@ class State {
     this.shapeList = [];
     this.coordinates = [];
     this.isDrawing = false;
-    this.shape = Square;
+    this.shape = Line;
     this.shapeColor = new Color(1, 1, 1);
     this.backgroundColor = new Color(0, 0, 0);
   }
