@@ -1,6 +1,12 @@
 const state = new State();
 state.drawAll();
 
+var scalePointRange = document.getElementById("scale-point");
+var scaleValue = document.getElementById("scale-value");
+scalePointRange.addEventListener("change", () => {
+  scaleValue.innerHTML = scalePointRange.value;
+})
+
 const drawNewShape = () => {
   state.addShape();
   state.drawAll();
@@ -34,7 +40,6 @@ canvas.addEventListener("keypress", (e) => {
 });
 
 canvas.addEventListener("mousemove", (e) => {
-  // var scalePoint = document.getElementById("scale-point").value;
   // console.log(scalePoint);
   if (state.isDrawing) {
     state.drawAll();
