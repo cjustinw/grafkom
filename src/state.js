@@ -73,7 +73,7 @@ class State {
     return { x, y };
   }
 
-  getNearestPoint(event) {
+  getNearestPoint(event, scalePoint = 1.2) {
     var x1 = (event.offsetX / canvas.clientWidth) * 2 - 1;
     var y1 = (1 - event.offsetY / canvas.clientHeight) * 2 - 1;
 
@@ -94,7 +94,7 @@ class State {
 
     for (let k = 0; k < this.shapeList.length; k++) {
       if (this.shapeList[k] == nearestShape) {
-        this.shapeList[k].scaleMatrix(2)
+        this.shapeList[k].scaleMatrix(scalePoint)
       }
     }
     // return nearestShape;

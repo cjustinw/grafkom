@@ -71,7 +71,8 @@ class Shape {
       0, 0, scale[10] * this.matrix[10], 0,
       0, 0, 0, scale[15] * this.matrix[15]
     ]
-    this.setMatrix(result)
+
+    this.setMatrix(result);
   }
 }
 

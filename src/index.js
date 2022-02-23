@@ -10,6 +10,7 @@ const drawNewShape = () => {
 
 canvas.addEventListener("click", (e) => {
   var cursorMode = document.getElementById("cursor-mode").value;
+  var scalePoint = document.getElementById("scale-point").value;
   console.log(cursorMode);
   if (cursorMode === "draw") {
     const { x, y } = state.getCursorCoordinate(e);
@@ -21,9 +22,8 @@ canvas.addEventListener("click", (e) => {
       drawNewShape();
     }
   } else {
-    state.getNearestPoint(e);
+    state.getNearestPoint(e, scalePoint);
     state.drawAll();
-
   }
 });
 
@@ -34,6 +34,8 @@ canvas.addEventListener("keypress", (e) => {
 });
 
 canvas.addEventListener("mousemove", (e) => {
+  // var scalePoint = document.getElementById("scale-point").value;
+  // console.log(scalePoint);
   if (state.isDrawing) {
     state.drawAll();
     const { x, y } = state.getCursorCoordinate(e);
