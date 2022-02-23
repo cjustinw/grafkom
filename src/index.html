@@ -11,37 +11,39 @@
       integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
       crossorigin="anonymous"
     />
-    <link href="css/style.css" rel="stylesheet" />
+    <link href="./styles.css" rel="stylesheet" />
   </head>
   <body>
-    <div>
-      <label for="cursor-mode">Mode</label>
-      <select name="cursor-mode" id="cursor-mode">
-        <option value="draw">Draw</option>
-        <option value="scale" selected="selected">Scale</option>
-      </select>
-    </div>
+    <div class="navbar">
+      <div>
+        <label for="cursor-mode">Mode</label>
+        <select name="cursor-mode" id="cursor-mode">
+          <option value="draw" selected="selected">Draw</option>
+          <option value="scale">Scale</option>
+        </select>
+      </div>
 
-    <div>
-      <label for="shapes">Shapes</label>
-      <select name="shapes" id="shapes">
-        <option value="line" selected="selected">Line</option>
-        <option value="square">Square</option>
-        <option value="rectangle">Rectangle</option>
-        <option value="polygon">Polygon</option>
-      </select>
-    </div>
+      <div>
+        <label for="shapes">Shapes</label>
+        <select name="shapes" id="shapes">
+          <option value="line" selected="selected">Line</option>
+          <option value="square">Square</option>
+          <option value="rectangle">Rectangle</option>
+          <option value="polygon">Polygon</option>
+        </select>
+      </div>
 
-    <div>
-      <label for="scale-point">Scale : <span id="scale-value">0</span></label>
-      <input
-        type="range"
-        id="scale-point"
-        name="scale-point"
-        min="0.1"
-        max="1.5"
-        step="0.01"
-      />
+      <div>
+        <label for="scale-point">Scale : <span id="scale-value">0</span></label>
+        <input
+          type="range"
+          id="scale-point"
+          name="scale-point"
+          min="0.1"
+          max="1.5"
+          step="0.01"
+        />
+      </div>
     </div>
 
     <canvas id="canvas" width="500" height="500" tabindex="1"></canvas>

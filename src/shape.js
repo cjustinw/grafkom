@@ -83,6 +83,8 @@ class Line extends Shape {
   }
 }
 
+// cari selisih titik x1 y1 sama x2 y2(cursor)
+// cari selisih x dan y yang paling besar
 class Square extends Shape {
   constructor(points, color) {
     const newPoints = [
