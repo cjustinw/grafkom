@@ -56,6 +56,10 @@ canvas.addEventListener("click", (e) => {
     state.getNearestPoint(e, scalePoint);
     state.drawAll();
   }
+  else {
+    state.getNearestPointColor(e);
+    state.drawAll();
+  }
 });
 
 canvas.addEventListener("keypress", (e) => {
