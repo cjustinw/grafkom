@@ -104,10 +104,7 @@ class State {
 getNearestPointColor(e) {
   var x1 = (e.offsetX / canvas.clientWidth) * 2 - 1;
   var y1 = (1 - e.offsetY / canvas.clientHeight) * 2 - 1;
-  var color1 = parseInt(document.getElementById('color-point').value.substr(1, 6),16,)
-  color1 = [Math.floor(color1 / 65536) / 255,
-  Math.floor((color1 % 65536) / 256) / 255,
-  (color1 % 256) / 255,]
+
 
   let nearestShape;
   let min = 9999;
@@ -123,13 +120,17 @@ getNearestPointColor(e) {
       }
     }
   }
-
-  
+  var color1 = parseInt(document.getElementById('color-point').value.substr(1, 6),16,)
+  color1 = [Math.floor(color1 / 65536) / 255,
+  Math.floor((color1 % 65536) / 256) / 255,
+  (color1 % 256) / 255,];
+  var color2 = new Color(color1[0], color1[1], color1[2]);
   for (let k = 0; k < this.shapeList.length; k++) {
     if (this.shapeList[k] == nearestShape) {
-      state.shapeList[k].color.red = color1[0];
-      state.shapeList[k].color.green = color1[1];
-      state.shapeList[k].color.blue = color1[2];    
+      state.shapeList[k].setColor(color2);
+      //state.shapeList[k].color.red = color1[0];
+      //state.shapeList[k].color.green = color1[1];
+      //state.shapeList[k].color.blue = color1[2];    
   }
   }
   // return nearestShape;

@@ -74,6 +74,10 @@ class Shape {
 
     this.setMatrix(result);
   }
+
+  setColor(color) {
+    this.color = color;
+  }
 }
 
 class Line extends Shape {
