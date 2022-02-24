@@ -52,7 +52,7 @@ canvas.addEventListener("click", (e) => {
     if (state.shape != Polygon && state.getCoordinatesLength() >= 2) {
       drawNewShape();
     }
-  } else {
+  } else if (cursorMode === "scale") {
     state.getNearestPoint(e, scalePoint);
     state.drawAll();
   }
