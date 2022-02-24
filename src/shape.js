@@ -91,11 +91,21 @@ class Line extends Shape {
 // cari selisih x dan y yang paling besar
 class Square extends Shape {
   constructor(points, color) {
+    const x1 = points[0].x;
+    const y1 = points[0].y;
+    let x2 = points[1].x;
+    let y2 = points[1].y;
+
+    const longestDistXY = Math.abs(x1 - x2) > Math.abs(y1 - y2) ? Math.abs(x1 - x2) : Math.abs(y1 - y2);
+
+    x2 = x1 > x2 ? x1 - longestDistXY : x1 + longestDistXY;
+    y2 = y1 > y2 ? y1 - longestDistXY : y1 + longestDistXY;
+
     const newPoints = [
-      new Point(points[0].x, points[0].y), //0
-      new Point(points[1].x, points[0].y), //1
-      new Point(points[1].x, points[1].y), //2
-      new Point(points[0].x, points[1].y), //3
+      new Point(x1, y1), //0
+      new Point(x2, y1), //1
+      new Point(x2, y2), //2
+      new Point(x1, y2), //3
     ];
     super(newPoints, gl.TRIANGLE_FAN, color);
   }
