@@ -1,13 +1,26 @@
+const scalePointRange = document.getElementById("scale-point");
+const cursorMode = document.getElementById("cursor-mode");
+const scaleValue = document.getElementById("scale-value");
+const shapes = document.getElementById("shapes");
+
+const mode = {
+  DRAW: "draw",
+  MOVE: "move",
+  SCALE: "scale",
+}
+
 const state = new State();
+
 state.drawAll();
 
-var scalePointRange = document.getElementById("scale-point");
-var scaleValue = document.getElementById("scale-value");
 scalePointRange.addEventListener("change", () => {
   scaleValue.innerHTML = scalePointRange.value;
-})
+});
 
-var shapes = document.getElementById("shapes");
+cursorMode.addEventListener("change", () => {
+  state.setMode(cursorMode.value);
+});
+
 shapes.addEventListener("change", () => {
   switch (shapes.value){
     case ("line"):
@@ -32,26 +45,41 @@ shapes.addEventListener("change", () => {
   }
 });
 
-const drawNewShape = () => {
-  state.addShape();
-  state.drawAll();
-  state.setIsDrawing(false);
-  state.setCoordinates([]);
-};
-
 canvas.addEventListener("click", (e) => {
-  var cursorMode = document.getElementById("cursor-mode").value;
-  var scalePoint = document.getElementById("scale-point").value;
-  if (cursorMode === "draw") {
-    const { x, y } = state.getCursorCoordinate(e);
-    if (state.getCoordinatesLength() < 1) {
+  const { x, y } = state.getCursorCoordinate(e);
+  if (state.mode === mode.DRAW) {
+    state.addCoordinate(x, y);
+    if (state.getCoordinatesLength() <= 1) {
       state.setIsDrawing(true);
     }
-    state.addCoordinate(x, y);
-    if (state.shape != Polygon && state.getCoordinatesLength() >= 2) {
-      drawNewShape();
+    else if (state.shape != Polygon && state.getCoordinatesLength() >= 2) {
+      state.addShape();
+      state.drawAll();
+      state.setIsDrawing(false);
+      state.setCoordinates([]);
     }
-  } else if (cursorMode === "scale") {
+  } 
+  else if (state.mode === mode.MOVE) {
+    state.addCoordinate(x, y);
+    console.log(state.coordinates);
+    if (state.getCoordinatesLength() <= 1) {
+      state.setIsMove(true);
+    }
+    else {
+      const index = state.getIndexOfShapeInCoordinate(state.coordinates[0]);
+      if(index !== null) {
+        console.log(index);
+        const distX = state.coordinates[1].x - state.coordinates[0].x;
+        const distY = state.coordinates[1].y - state.coordinates[0].y;
+        state.shapeList[index].move(distX, distY);
+        state.drawAll();
+      }
+      state.setIsMove(false);
+      state.setCoordinates([]);
+    }
+  }
+  else if (state.mode === mode.SCALE) {
+    const scalePoint = scalePointRange.value;
     state.getNearestPoint(e, scalePoint);
     state.drawAll();
   }
@@ -62,20 +90,30 @@ canvas.addEventListener("click", (e) => {
 });
 
 canvas.addEventListener("keypress", (e) => {
-  if (state.shape === Polygon && e.keyCode === 13) {
-    drawNewShape();
+  if (state.mode === mode.DRAW) {
+    if (state.shape === Polygon && e.keyCode === 13) {
+      state.addShape();
+      state.drawAll();
+      state.setIsDrawing(false);
+      state.setCoordinates([]);
+    }
   }
 });
 
 canvas.addEventListener("mousemove", (e) => {
-  if (state.isDrawing) {
-    state.drawAll();
-    const { x, y } = state.getCursorCoordinate(e);
-    const tempCoordinates = [...state.coordinates, new Point(x, y)];
-    if (state.shape === Polygon && state.getCoordinatesLength() < 2) {
-      new Line(tempCoordinates, state.shapeColor).draw();
-      return;
+  if (state.mode === mode.DRAW) {
+    if (state.isDrawing) {
+      state.drawAll();
+      const { x, y } = state.getCursorCoordinate(e);
+      const tempCoordinates = [...state.coordinates, new Point(x, y)];
+      if (state.shape === Polygon && state.getCoordinatesLength() < 2) {
+        new Line(tempCoordinates, state.shapeColor).draw();
+        return;
+      }
+      new state.shape(tempCoordinates, state.shapeColor).draw();
     }
-    new state.shape(tempCoordinates, state.shapeColor).draw();
+  }
+  else if (state.mode === mode.MOVE) {
+    //
   }
 });

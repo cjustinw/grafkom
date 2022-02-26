@@ -50,6 +50,13 @@ class Shape {
     gl.drawArrays(this.shape, 0, this.points.length);
   }
 
+  move(distX, distY) {
+    this.points.forEach((point, index) => {
+      this.points[index].x += distX;
+      this.points[index].y += distY;
+    });
+  }
+
   setMatrix(matrix) {
     this.matrix = matrix;
   }
@@ -82,7 +89,7 @@ class Shape {
     let x = point.x;
     let y = point.y;
     let n = this.points.length;
-    let result = true;
+    let result = false;
     for (let i = 0, j = n-1; i < n; j = i++) {
       let pointXi = this.points[i].x;
       let pointYi = this.points[i].y;

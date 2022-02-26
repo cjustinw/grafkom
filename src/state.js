@@ -3,6 +3,8 @@ class State {
     this.shapeList = [];
     this.coordinates = [];
     this.isDrawing = false;
+    this.isMove = false;
+    this.mode = "draw"
     this.shape = Line;
     this.shapeColor = new Color(1, 1, 1);
     this.backgroundColor = new Color(0, 0, 0);
@@ -47,8 +49,16 @@ class State {
     this.isDrawing = isDrawing;
   }
 
+  setIsMove(isMove) {
+    this.isMove = isMove;
+  }
+
   setShape(shape) {
     this.shape = shape;
+  }
+
+  setMode(mode) {
+    this.mode = mode;
   }
 
   setShapeColor(red, green, blue) {
@@ -73,11 +83,11 @@ class State {
     return { x, y };
   }
 
-  getShapeOnCoordinate(point) {
+  getIndexOfShapeInCoordinate(point) {
     let result = null;
-    this.shapeList.forEach(shape => {
+    this.shapeList.forEach((shape, index) => {
       if (shape.isPointInside(point)) {
-        result = shape
+        result = index;
       }
     });
     return result;
