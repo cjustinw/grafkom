@@ -5,32 +5,32 @@ var scalePointRange = document.getElementById("scale-point");
 var scaleValue = document.getElementById("scale-value");
 scalePointRange.addEventListener("change", () => {
   scaleValue.innerHTML = scalePointRange.value;
-})
+});
 
 var shapes = document.getElementById("shapes");
 shapes.addEventListener("change", () => {
-  switch (shapes.value){
-    case ("line"):
+  switch (shapes.value) {
+    case "line":
       state.setShape(Line);
       break;
-    
-    case ("square"):
+
+    case "square":
       state.setShape(Square);
       break;
-    
-    case ("rectangle"):
+
+    case "rectangle":
       state.setShape(Rectangle);
       break;
 
-    case ("polygon"):
+    case "polygon":
       state.setShape(Polygon);
       break;
-    
+
     default:
       state.setShape(Line);
       break;
   }
-})
+});
 
 const drawNewShape = () => {
   state.addShape();
@@ -43,8 +43,8 @@ canvas.addEventListener("click", (e) => {
   var cursorMode = document.getElementById("cursor-mode").value;
   var scalePoint = document.getElementById("scale-point").value;
   console.log(cursorMode);
+  const { x, y } = state.getCursorCoordinate(e);
   if (cursorMode === "draw") {
-    const { x, y } = state.getCursorCoordinate(e);
     if (state.getCoordinatesLength() < 1) {
       state.setIsDrawing(true);
     }
@@ -53,10 +53,13 @@ canvas.addEventListener("click", (e) => {
       drawNewShape();
     }
   } else if (cursorMode === "scale") {
-    state.getNearestPoint(e, scalePoint);
+    let shapeIndex = state.getIndexOfShapeInCoordinate(new Point(x, y));
+    // console.log(shapeIndex);
+    // console.log(state.shapeList[shapeIndex]);
+    state.shapeList[shapeIndex].scaleMatrix(scalePoint);
+    // state.getNearestPoint(e, scalePoint);
     state.drawAll();
-  }
-  else {
+  } else {
     state.getNearestPointColor(e);
     state.drawAll();
   }
@@ -82,54 +85,63 @@ canvas.addEventListener("mousemove", (e) => {
   }
 });
 
-var download = function(filename, text) {
-  var element = document.createElement('a')
-  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text))
-  element.setAttribute('download', filename)
+var download = function (filename, text) {
+  var element = document.createElement("a");
+  element.setAttribute(
+    "href",
+    "data:text/plain;charset=utf-8," + encodeURIComponent(text)
+  );
+  element.setAttribute("download", filename);
 
-  element.style.display = 'none'
-  document.body.appendChild(element)
+  element.style.display = "none";
+  document.body.appendChild(element);
 
-  element.click()
+  element.click();
 
-  document.body.removeChild(element)
-}
+  document.body.removeChild(element);
+};
 
 var exportButton = document.getElementById("export_button");
 exportButton.addEventListener("click", () => {
-  var filename = document.getElementById("export_file").value
-  console.log(state)
+  var filename = document.getElementById("export_file").value;
+  console.log(state);
 
   if (!filename) {
-      filename = 'data'
+    filename = "data";
   }
 
   var data = JSON.stringify(state);
   download(filename + ".json", data);
 
-  console.log("The file was saved!"); 
-})
+  console.log("The file was saved!");
+});
 
 var importButton = document.getElementById("import_button");
 importButton.addEventListener("click", () => {
-    var file = document.getElementById("import_file").files[0]
-    var reader = new FileReader();
-    // var data = [];
-    reader.onload = function(e){
-        console.log('file imported')
-        let arrObjects = JSON.parse(e.target.result);
-        console.log(arrObjects);
-        state.setState(arrObjects.shapeList, arrObjects.coordinates, arrObjects.isDrawing, arrObjects.shapeColor, arrObjects.backgroundColor);
-        // state.setShape(Line)
-        // state.drawAll();
-        // console.log(state)
-        // console.log(data)
-        // arrObjects = data
-        // renderAll()
-    }
-    
-    reader.readAsText(file);
-    if (!file) {
-        alert('Blank file')
-    }
-})
+  var file = document.getElementById("import_file").files[0];
+  var reader = new FileReader();
+  // var data = [];
+  reader.onload = function (e) {
+    console.log("file imported");
+    let arrObjects = JSON.parse(e.target.result);
+    console.log(arrObjects);
+    state.setState(
+      arrObjects.shapeList,
+      arrObjects.coordinates,
+      arrObjects.isDrawing,
+      arrObjects.shapeColor,
+      arrObjects.backgroundColor
+    );
+    // state.setShape(Line)
+    // state.drawAll();
+    // console.log(state)
+    // console.log(data)
+    // arrObjects = data
+    // renderAll()
+  };
+
+  reader.readAsText(file);
+  if (!file) {
+    alert("Blank file");
+  }
+});

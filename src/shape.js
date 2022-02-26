@@ -78,6 +78,27 @@ class Shape {
   setColor(color) {
     this.color = color;
   }
+
+  isPointInside(point) {
+    let x = point.x;
+    let y = point.y;
+    let n = this.points.length;
+    let result = false;
+    for (let i = 0, j = n - 1; i < n; j = i++) {
+      let pointXi = this.points[i].x;
+      let pointYi = this.points[i].y;
+      let pointXj = this.points[j].x;
+      let pointYj = this.points[j].y;
+      if (
+        pointYi > y != pointYj > y &&
+        x <
+          ((pointXj - pointXi) * (y - pointYi)) / (pointYj - pointYi) + pointXi
+      ) {
+        result = !result;
+      }
+    }
+    return result;
+  }
 }
 
 class Line extends Shape {
@@ -96,7 +117,10 @@ class Square extends Shape {
     let x2 = points[1].x;
     let y2 = points[1].y;
 
-    const longestDistXY = Math.abs(x1 - x2) > Math.abs(y1 - y2) ? Math.abs(x1 - x2) : Math.abs(y1 - y2);
+    const longestDistXY =
+      Math.abs(x1 - x2) > Math.abs(y1 - y2)
+        ? Math.abs(x1 - x2)
+        : Math.abs(y1 - y2);
 
     x2 = x1 > x2 ? x1 - longestDistXY : x1 + longestDistXY;
     y2 = y1 > y2 ? y1 - longestDistXY : y1 + longestDistXY;
