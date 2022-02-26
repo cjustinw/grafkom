@@ -16,6 +16,13 @@
   <body>
     <div class="navbar">
       <div>
+        <input type="text" id="export_file" placeholder="Enter file name" />
+        <input type="button" value="Export" id="export_button" />
+        <input type="file" id="import_file" accept=".json" />
+        <input type="button" value="Import" id="import_button" />
+      </div>
+
+      <div>
         <label for="cursor-mode">Mode</label>
         <select name="cursor-mode" id="cursor-mode">
           <option value="draw" selected="selected">Draw</option>
@@ -50,13 +57,8 @@
 
       <div>
         <label for="color-point">Color : <span id="color-value"></span></label>
-        <input
-          type="color"
-          id="color-point"
-          name="color-point"
-        />
+        <input type="color" id="color-point" name="color-point" />
       </div>
-
     </div>
 
     <canvas id="canvas" width="500" height="500" tabindex="1"></canvas>
