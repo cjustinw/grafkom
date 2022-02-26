@@ -42,7 +42,7 @@ const drawNewShape = () => {
 canvas.addEventListener("click", (e) => {
   var cursorMode = document.getElementById("cursor-mode").value;
   var scalePoint = document.getElementById("scale-point").value;
-  console.log(cursorMode);
+  console.log(state);
   if (cursorMode === "draw") {
     const { x, y } = state.getCursorCoordinate(e);
     if (state.getCoordinatesLength() < 1) {
@@ -77,3 +77,74 @@ canvas.addEventListener("mousemove", (e) => {
     new state.shape(tempCoordinates, state.shapeColor).draw();
   }
 });
+
+// FILE
+var exportButton = document.getElementById("export_button");
+exportButton.addEventListener("click", () => {
+   var filename = document.getElementById("export_file").value
+   console.log(state)
+
+    if (!filename) {
+        filename = 'data'
+    }
+
+    var data = JSON.stringify(state);
+    download(filename + ".json", data);
+
+    console.log("The file was saved!"); 
+})
+
+var importButton = document.getElementById("import_button");
+importButton.addEventListener("click", () => {
+    var file = document.getElementById("import_file").files[0]
+    var reader = new FileReader();
+    // var data = [];
+    reader.onload = function(e){
+        console.log('file imported')
+        let arrObjects = JSON.parse(e.target.result);
+        console.log(arrObjects);
+        state.setState(arrObjects.shapeList, arrObjects.coordinates, arrObjects.isDrawing, arrObjects.shapeColor, arrObjects.backgroundColor);
+        // state.setShape(Line)
+        // state.drawAll();
+        // console.log(state)
+        // console.log(data)
+        // arrObjects = data
+        // renderAll()
+    }
+    
+    reader.readAsText(file);
+    if (!file) {
+        alert('Blank file')
+    }
+})
+
+var importFile = function() {
+    // var file = document.getElementById("import_file").files[0]
+    // var reader = new FileReader();
+    // // var data = [];
+    // reader.onload = function(e){
+    //     console.log('file imported')
+    //     arrObjects = JSON.parse(e.target.result);
+    //     // console.log(data)
+    //     // arrObjects = data
+    //     renderAll()
+    // }
+    
+    // reader.readAsText(file);
+    // if (!file) {
+    //     alert('Blank file')
+    // }
+}
+
+var download = function(filename, text) {
+    var element = document.createElement('a')
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text))
+    element.setAttribute('download', filename)
+
+    element.style.display = 'none'
+    document.body.appendChild(element)
+
+    element.click()
+
+    document.body.removeChild(element)
+}
