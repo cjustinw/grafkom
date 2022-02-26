@@ -39,7 +39,6 @@ class Shape {
         this.color.blue
       );
     });
-    console.log(this.points);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 
     const uProjectionMatrix = gl.getUniformLocation(
@@ -51,8 +50,19 @@ class Shape {
     gl.drawArrays(this.shape, 0, this.points.length);
   }
 
+  move(distX, distY) {
+    this.points.forEach((point, index) => {
+      this.points[index].x += distX;
+      this.points[index].y += distY;
+    });
+  }
+
   setMatrix(matrix) {
     this.matrix = matrix;
+  }
+
+  setColor(color) {
+    this.color = color;
   }
 
   // prettier-ignore
@@ -75,8 +85,21 @@ class Shape {
     this.setMatrix(result);
   }
 
-  setColor(color) {
-    this.color = color;
+  isPointInside(point) {
+    let x = point.x;
+    let y = point.y;
+    let n = this.points.length;
+    let result = false;
+    for (let i = 0, j = n-1; i < n; j = i++) {
+      let pointXi = this.points[i].x;
+      let pointYi = this.points[i].y;
+      let pointXj = this.points[j].x;
+      let pointYj = this.points[j].y;
+      if ( ((pointYi>y) != (pointYj>y)) && (x < (pointXj-pointXi) * (y-pointYi) / (pointYj-pointYi) + pointXi) ) {
+        result = !result;
+      }
+    }
+    return result;
   }
 }
 
