@@ -81,3 +81,31 @@ canvas.addEventListener("mousemove", (e) => {
     new state.shape(tempCoordinates, state.shapeColor).draw();
   }
 });
+
+var download = function(filename, text) {
+  var element = document.createElement('a')
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text))
+  element.setAttribute('download', filename)
+
+  element.style.display = 'none'
+  document.body.appendChild(element)
+
+  element.click()
+
+  document.body.removeChild(element)
+}
+
+var exportButton = document.getElementById("export_button");
+exportButton.addEventListener("click", () => {
+  var filename = document.getElementById("export_file").value
+  console.log(state)
+
+  if (!filename) {
+      filename = 'data'
+  }
+
+  var data = JSON.stringify(state);
+  download(filename + ".json", data);
+
+  console.log("The file was saved!"); 
+})
