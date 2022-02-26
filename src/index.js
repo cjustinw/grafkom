@@ -30,7 +30,7 @@ shapes.addEventListener("change", () => {
       state.setShape(Line);
       break;
   }
-})
+});
 
 const drawNewShape = () => {
   state.addShape();
@@ -42,7 +42,6 @@ const drawNewShape = () => {
 canvas.addEventListener("click", (e) => {
   var cursorMode = document.getElementById("cursor-mode").value;
   var scalePoint = document.getElementById("scale-point").value;
-  console.log(cursorMode);
   if (cursorMode === "draw") {
     const { x, y } = state.getCursorCoordinate(e);
     if (state.getCoordinatesLength() < 1) {
@@ -69,7 +68,6 @@ canvas.addEventListener("keypress", (e) => {
 });
 
 canvas.addEventListener("mousemove", (e) => {
-  // console.log(scalePoint);
   if (state.isDrawing) {
     state.drawAll();
     const { x, y } = state.getCursorCoordinate(e);
