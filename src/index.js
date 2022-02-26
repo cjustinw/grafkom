@@ -109,3 +109,27 @@ exportButton.addEventListener("click", () => {
 
   console.log("The file was saved!"); 
 })
+
+var importButton = document.getElementById("import_button");
+importButton.addEventListener("click", () => {
+    var file = document.getElementById("import_file").files[0]
+    var reader = new FileReader();
+    // var data = [];
+    reader.onload = function(e){
+        console.log('file imported')
+        let arrObjects = JSON.parse(e.target.result);
+        console.log(arrObjects);
+        state.setState(arrObjects.shapeList, arrObjects.coordinates, arrObjects.isDrawing, arrObjects.shapeColor, arrObjects.backgroundColor);
+        // state.setShape(Line)
+        // state.drawAll();
+        // console.log(state)
+        // console.log(data)
+        // arrObjects = data
+        // renderAll()
+    }
+    
+    reader.readAsText(file);
+    if (!file) {
+        alert('Blank file')
+    }
+})

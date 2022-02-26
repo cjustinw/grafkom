@@ -32,6 +32,14 @@ class State {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   }
 
+   setState(shapeList, coordinates, isDrawing, shapeColor, backgroundColor) {
+    this.shapeList = shapeList;
+    this.coordinates = coordinates;
+    this.isDrawing = isDrawing;
+    this.shapeColor = shapeColor;
+    this.backgroundColor = backgroundColor;
+  }
+
   addCoordinate(x, y) {
     this.coordinates.push(new Point(x, y));
   }
