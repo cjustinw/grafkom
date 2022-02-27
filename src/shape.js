@@ -90,33 +90,28 @@ class Shape {
     let y = point.y;
     let n = this.points.length;
     let result = false;
+
+    if(n === 2) {
+      let m = (this.points[1].y - this.points[0].y) / (this.points[1].x - this.points[0].x);
+      let f = (y - this.points[1].y) - (m * (x - this.points[1].x));
+      let boundY = this.points[1].y > this.points[0].y ? (
+        this.points[1].y > y && this.points[0].y < y
+      ) : (
+        this.points[0].y > y && this.points[1].y < y
+      );
+      let boundX = this.points[1].x > this.points[0].x ? (
+        this.points[1].x > x && this.points[0].x < x
+      ) : (
+        this.points[0].x > x && this.points[1].x < x
+      );
+      return (f < 1e-6 && boundX && boundY);
+    }
     for (let i = 0, j = n-1; i < n; j = i++) {
       let pointXi = this.points[i].x;
       let pointYi = this.points[i].y;
       let pointXj = this.points[j].x;
       let pointYj = this.points[j].y;
       if ( ((pointYi>y) != (pointYj>y)) && (x < (pointXj-pointXi) * (y-pointYi) / (pointYj-pointYi) + pointXi) ) {
-        result = !result;
-      }
-    }
-    return result;
-  }
-
-  isPointInside(point) {
-    let x = point.x;
-    let y = point.y;
-    let n = this.points.length;
-    let result = false;
-    for (let i = 0, j = n - 1; i < n; j = i++) {
-      let pointXi = this.points[i].x;
-      let pointYi = this.points[i].y;
-      let pointXj = this.points[j].x;
-      let pointYj = this.points[j].y;
-      if (
-        pointYi > y != pointYj > y &&
-        x <
-          ((pointXj - pointXi) * (y - pointYi)) / (pointYj - pointYi) + pointXi
-      ) {
         result = !result;
       }
     }
