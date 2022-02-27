@@ -15,7 +15,8 @@ class Point {
 
 // prettier-ignore
 class Shape {
-  constructor(points, shape, color) {
+  constructor(name = null, points = null, shape = null, color = null) {
+    this.name = name;
     this.points = points;
     this.shape = shape;
     this.color = color;
@@ -57,6 +58,13 @@ class Shape {
     });
   }
 
+  load(name, points, shape, color) {
+    this.name = name;
+    this.points = points;
+    this.shape = shape;
+    this.color = color;
+  }
+
   setMatrix(matrix) {
     this.matrix = matrix;
   }
@@ -95,16 +103,16 @@ class Shape {
       let m = (this.points[1].y - this.points[0].y) / (this.points[1].x - this.points[0].x);
       let f = (y - this.points[1].y) - (m * (x - this.points[1].x));
       let boundY = this.points[1].y > this.points[0].y ? (
-        this.points[1].y > y && this.points[0].y < y
+        this.points[1].y >= y && this.points[0].y <= y
       ) : (
-        this.points[0].y > y && this.points[1].y < y
+        this.points[0].y >= y && this.points[1].y <= y
       );
       let boundX = this.points[1].x > this.points[0].x ? (
-        this.points[1].x > x && this.points[0].x < x
+        this.points[1].x >= x && this.points[0].x <= x
       ) : (
-        this.points[0].x > x && this.points[1].x < x
+        this.points[0].x >= x && this.points[1].x <= x
       );
-      return (f < 1e-6 && boundX && boundY);
+      return (f < 1e-5 && boundX && boundY);
     }
     for (let i = 0, j = n-1; i < n; j = i++) {
       let pointXi = this.points[i].x;
@@ -120,53 +128,73 @@ class Shape {
 }
 
 class Line extends Shape {
-  constructor(points, color) {
-    const newPoints = [points[0], points[1]];
-    super(newPoints, gl.LINE_STRIP, color);
+  constructor(points = null, color = null) {
+    if (points != null && color != null) {
+      const newPoints = [points[0], points[1]];
+      super("line", newPoints, gl.LINE_STRIP, color);
+    }
+    else {
+      super();
+    }
   }
 }
 
 // cari selisih titik x1 y1 sama x2 y2(cursor)
 // cari selisih x dan y yang paling besar
 class Square extends Shape {
-  constructor(points, color) {
-    const x1 = points[0].x;
-    const y1 = points[0].y;
-    let x2 = points[1].x;
-    let y2 = points[1].y;
-
-    const longestDistXY =
-      Math.abs(x1 - x2) > Math.abs(y1 - y2)
-        ? Math.abs(x1 - x2)
-        : Math.abs(y1 - y2);
-
-    x2 = x1 > x2 ? x1 - longestDistXY : x1 + longestDistXY;
-    y2 = y1 > y2 ? y1 - longestDistXY : y1 + longestDistXY;
-
-    const newPoints = [
-      new Point(x1, y1), //0
-      new Point(x2, y1), //1
-      new Point(x2, y2), //2
-      new Point(x1, y2), //3
-    ];
-    super(newPoints, gl.TRIANGLE_FAN, color);
+  constructor(points = null, color = null) {
+    if (points != null && color != null) {
+      const x1 = points[0].x;
+      const y1 = points[0].y;
+      let x2 = points[1].x;
+      let y2 = points[1].y;
+  
+      const longestDistXY =
+        Math.abs(x1 - x2) > Math.abs(y1 - y2)
+          ? Math.abs(x1 - x2)
+          : Math.abs(y1 - y2);
+  
+      x2 = x1 > x2 ? x1 - longestDistXY : x1 + longestDistXY;
+      y2 = y1 > y2 ? y1 - longestDistXY : y1 + longestDistXY;
+  
+      const newPoints = [
+        new Point(x1, y1), //0
+        new Point(x2, y1), //1
+        new Point(x2, y2), //2
+        new Point(x1, y2), //3
+      ];
+      super("square", newPoints, gl.TRIANGLE_FAN, color);
+    }
+    else {
+      super();
+    }
   }
 }
 
 class Rectangle extends Shape {
   constructor(points, color) {
-    const newPoints = [
-      new Point(points[0].x, points[0].y),
-      new Point(points[1].x, points[0].y),
-      new Point(points[1].x, points[1].y),
-      new Point(points[0].x, points[1].y),
-    ];
-    super(newPoints, gl.TRIANGLE_FAN, color);
+    if (points != null && color != null) {
+      const newPoints = [
+        new Point(points[0].x, points[0].y),
+        new Point(points[1].x, points[0].y),
+        new Point(points[1].x, points[1].y),
+        new Point(points[0].x, points[1].y),
+      ];
+      super("rectangle", newPoints, gl.TRIANGLE_FAN, color);
+    }
+    else {
+      super();
+    }
   }
 }
 
 class Polygon extends Shape {
   constructor(points, color) {
-    super(points, gl.TRIANGLE_FAN, color);
+    if (points != null && color != null) {
+      super("polygon", points, gl.TRIANGLE_FAN, color);
+    }
+    else {
+      super();
+    }
   }
 }

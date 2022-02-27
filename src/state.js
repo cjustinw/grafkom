@@ -7,8 +7,8 @@ class State {
     this.selectedShape = null;
     this.mode = "draw"
     this.shape = Line;
-    this.shapeColor = new Color(1, 1, 1);
-    this.backgroundColor = new Color(0, 0, 0);
+    this.shapeColor = new Color(0, 0, 0);
+    this.backgroundColor = new Color(1, 1, 1);
   }
 
   drawAll() {
@@ -74,12 +74,15 @@ class State {
     this.mode = mode;
   }
 
-  setShapeColor(red, green, blue) {
-    this.shapeColor = new Color(red, green, blue);
+  setShapeColor(index, colorInput) {
+    let color = [Math.floor(colorInput / 65536) / 255, Math.floor((colorInput % 65536) / 256) / 255, (colorInput % 256) / 255];
+    let newColor = new Color(color[0], color[1], color[2]);
+    this.shapeList[index].setColor(newColor);
   }
 
-  setBackgroundColor(red, green, blue) {
-    this.backgroundColor = new Color(red, green, blue);
+  setDefaultShapeColor(colorInput) {
+    let color = [Math.floor(colorInput / 65536) / 255, Math.floor((colorInput % 65536) / 256) / 255, (colorInput % 256) / 255];
+    this.shapeColor = new Color(color[0], color[1], color[2]);
   }
 
   setCoordinates(coordinates) {

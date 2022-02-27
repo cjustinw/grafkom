@@ -1,4 +1,5 @@
 const scalePointRange = document.getElementById("scale-point");
+const colorPointRange = document.getElementById("color-point");
 const cursorMode = document.getElementById("cursor-mode");
 const scaleValue = document.getElementById("scale-value");
 const shapes = document.getElementById("shapes");
@@ -12,6 +13,13 @@ const mode = {
   COLOR: "color",
 }
 
+const option = {
+  LINE: "line",
+  SQUARE: "square",
+  RECTANGLE: "rectangle",
+  POLYGON: "polygon"
+}
+
 const state = new State();
 state.drawAll();
 
@@ -23,21 +31,26 @@ scalePointRange.addEventListener("change", () => {
   scaleValue.innerHTML = scalePointRange.value;
 });
 
+colorPointRange.addEventListener("change", () => {
+  let color = parseInt(document.getElementById('color-point').value.substr(1, 6),16,)
+  state.setDefaultShapeColor(color);
+});
+
 shapes.addEventListener("change", () => {
   switch (shapes.value) {
-    case "line":
+    case option.LINE:
       state.setShape(Line);
       break;
 
-    case "square":
+    case option.SQUARE:
       state.setShape(Square);
       break;
 
-    case "rectangle":
+    case option.RECTANGLE:
       state.setShape(Rectangle);
       break;
 
-    case "polygon":
+    case option.POLYGON:
       state.setShape(Polygon);
       break;
 
@@ -51,10 +64,10 @@ canvas.addEventListener("click", (e) => {
   let { x, y } = state.getCursorCoordinate(e);
   if (state.mode === mode.DRAW) {
     state.addCoordinate(x, y);
-    if (state.getCoordinatesLength() <= 1) {
+    if (!state.isDrawing) {
       state.setIsDrawing(true);
     }
-    else if (state.shape != Polygon && state.getCoordinatesLength() >= 2) {
+    else if (state.shape != Polygon && state.isDrawing) {
       state.addShape();
       state.drawAll();
       state.setIsDrawing(false);
@@ -62,7 +75,7 @@ canvas.addEventListener("click", (e) => {
     }
   } 
   else if (state.mode === mode.MOVE) {
-    if (state.getCoordinatesLength() < 1) {
+    if (!state.isMove) {
       let shapeIndex = state.getIndexOfShapeInCoordinate(new Point(x, y));
       if(shapeIndex !== null) {
         state.addCoordinate(x, y);
@@ -70,7 +83,7 @@ canvas.addEventListener("click", (e) => {
         state.setIsMove(true);
       }
     }
-    else if (state.getCoordinatesLength() > 1){
+    else {
       state.moveShape(state.selectedShape, state.coordinates[state.getCoordinatesLength()-2], state.coordinates[state.getCoordinatesLength()-1]);
       state.setSelectedShape(null);
       state.drawAll();
@@ -80,30 +93,46 @@ canvas.addEventListener("click", (e) => {
   } 
   else if (state.mode === mode.SCALE) {
     let shapeIndex = state.getIndexOfShapeInCoordinate(new Point(x, y));
-    let scalePoint = scalePointRange.value;
-    state.shapeList[shapeIndex].scaleMatrix(scalePoint);
-    state.drawAll();
+    if (shapeIndex !== null) {
+      let scalePoint = scalePointRange.value;
+      state.shapeList[shapeIndex].scaleMatrix(scalePoint);
+      state.drawAll();
+    }
   } 
   else if (state.mode === mode.COLOR){
       let shapeIndex = state.getIndexOfShapeInCoordinate(new Point(x, y));
-      var color1 = parseInt(document.getElementById('color-point').value.substr(1, 6),16,)
-      color1 = [Math.floor(color1 / 65536) / 255,
-      Math.floor((color1 % 65536) / 256) / 255,
-      (color1 % 256) / 255,];
-  
-      var color2 = new Color(color1[0], color1[1], color1[2]);
-      state.shapeList[shapeIndex].setColor(color2);
-      state.drawAll();
+      if (shapeIndex !== null) {
+        let color = parseInt(document.getElementById('color-point').value.substr(1, 6),16,)
+        state.setShapeColor(shapeIndex, color);
+        state.drawAll();
+      }
   }
 });
 
 canvas.addEventListener("keypress", (e) => {
   if (state.mode === mode.DRAW) {
-    if (state.shape === Polygon && e.keyCode === 13) {
-      state.addShape();
-      state.drawAll();
-      state.setIsDrawing(false);
-      state.setCoordinates([]);
+    if (state.isDrawing) {
+      if (state.shape === Polygon && e.keyCode === 13) {
+        state.addShape();
+        state.drawAll();
+        state.setIsDrawing(false);
+        state.setCoordinates([]);
+      }
+      else if (e.keyCode === 113) {
+        state.setIsDrawing(false);
+        state.setCoordinates([]);
+        state.drawAll();
+      }
+    }
+  }
+  else if (state.mode === mode.MOVE) {
+    if (state.isMove) {
+      if (e.keyCode === 113) {
+        state.moveShape(state.selectedShape, state.coordinates[state.getCoordinatesLength()-1], state.coordinates[0]);
+        state.setIsMove(false);
+        state.setCoordinates([]);
+        state.drawAll();
+      }
     }
   }
 });
@@ -122,11 +151,13 @@ canvas.addEventListener("mousemove", (e) => {
     }
   }
   else if (state.mode === mode.MOVE) {
-    if (state.selectedShape !== null) {
-      state.drawAll();
-      let { x, y } = state.getCursorCoordinate(e);
-      state.addCoordinate(x, y);
-      state.moveShape(state.selectedShape, state.coordinates[state.getCoordinatesLength()-2], state.coordinates[state.getCoordinatesLength()-1]);
+    if (state.isMove) {
+      if (state.selectedShape !== null) {
+        state.drawAll();
+        let { x, y } = state.getCursorCoordinate(e);
+        state.addCoordinate(x, y);
+        state.moveShape(state.selectedShape, state.coordinates[state.getCoordinatesLength()-2], state.coordinates[state.getCoordinatesLength()-1]);
+      }
     }
   }
 });
@@ -149,7 +180,6 @@ const download = (filename, text) => {
 
 exportButton.addEventListener("click", () => {
   let filename = document.getElementById("export_file").value;
-  console.log(state);
 
   if (!filename) {
     filename = "data";
@@ -164,24 +194,37 @@ exportButton.addEventListener("click", () => {
 importButton.addEventListener("click", () => {
   let file = document.getElementById("import_file").files[0];
   let reader = new FileReader();
-  // var data = [];
-  reader.onload = function (e) {
+  reader.onload = (e) => {
     console.log("file imported");
     let arrObjects = JSON.parse(e.target.result);
-    console.log(arrObjects);
+    let shapeList = []
+    arrObjects.shapeList.forEach(shape => {
+      let newShape = null;
+      if (shape.name === option.LINE) {
+        newShape = new Line();
+      }
+      else if (shape.name === option.SQUARE) {
+        newShape = new Square();
+      }
+      else if (shape.name === option.RECTANGLE) {
+        newShape = new Rectangle();
+      }
+      else if (shape.name === option.POLYGON) {
+        newShape = new Polygon();
+      }
+      if (newShape !== null) {
+        newShape.load(shape.name, shape.points, shape.shape, shape.color);
+        shapeList.push(newShape);
+      }
+    });
     state.setState(
-      arrObjects.shapeList,
+      shapeList,
       arrObjects.coordinates,
       arrObjects.isDrawing,
       arrObjects.shapeColor,
       arrObjects.backgroundColor
     );
-    // state.setShape(Line)
-    // state.drawAll();
-    // console.log(state)
-    // console.log(data)
-    // arrObjects = data
-    // renderAll()
+    state.drawAll();
   };
 
   reader.readAsText(file);
