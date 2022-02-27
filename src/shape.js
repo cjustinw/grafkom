@@ -90,7 +90,11 @@ class Shape {
       0, 0, 0, scale[15] * this.matrix[15]
     ]
 
-    this.setMatrix(result);
+    for (let i = 0; i < this.points.length; i++) {
+      this.points[i].x *= result[0];
+      this.points[i].y *= result[5];
+    }
+    // this.setMatrix(result);
   }
 
   isPointInside(point) {
