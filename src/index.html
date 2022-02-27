@@ -51,12 +51,28 @@
           <input type="color" id="color-point" name="color-point" />
         </div>
         <div style="padding: 1rem;">
-          <input type="button" value="Export" id="export_button" />
           <input type="text" id="export_file" placeholder="Enter file name" />
+          <input type="button" value="Export" id="export_button" />
         </div>
         <div style="padding: 1rem;">
-          <input type="button" value="Import" id="import_button" />
           <input type="file" id="import_file" accept=".json" />
+          <input type="button" value="Import" id="import_button" />
+        </div>
+        <div style="padding: 1rem;">
+          <p>
+            Help
+            <br>
+            <ul>
+            <li> Pilih terlebih dahulu <b>Mode</b></li>
+             <li> Mode <b>Draw</b>  (gambar) : Pilih <b>Shapes</b> (Line/Square/Rectangle/Polygon), lalu mulai gambar di kanvas.
+             Untuk poligon, tekan enter saat selesai menggambar.</li>
+             <li> Mode <b>Move</b> (geser garis) : Geser garis yang diinginkan pada kanvas.</li>
+             <li> Mode <b>Scale</b> (ubah ukuran garis/panjang persegi) :  Atur <b>Scale</b> yang diharapkan lalu klik objek target.</li>
+             <li> Mode <b>Color</b> (ubah warna) : Pilih <b>Color</b> yang diharapkan lalu klik objek target.</li>
+             <li> Untuk menyimpan pengerjaan, tuliskan nama file lalu tekan <b>Export</b>.</li>
+             <li> Untuk membuka file yang telah disimpan, pilih file lalu tekan <b>Import</b>.</li>
+            </ul>
+          </p>
         </div>
       </div>
     </div>
