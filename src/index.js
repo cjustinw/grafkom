@@ -62,25 +62,25 @@ canvas.addEventListener("click", (e) => {
     }
   } 
   else if (state.mode === mode.MOVE) {
-    state.addCoordinate(x, y);
-    if (state.getCoordinatesLength() <= 1) {
-      state.setIsMove(true);
-    }
-    else {
-      let index = state.getIndexOfShapeInCoordinate(state.coordinates[0]);
-      if(index !== null) {
-        let distX = state.coordinates[1].x - state.coordinates[0].x;
-        let distY = state.coordinates[1].y - state.coordinates[0].y;
-        state.shapeList[index].move(distX, distY);
-        state.drawAll();
+    if (state.getCoordinatesLength() < 1) {
+      let shapeIndex = state.getIndexOfShapeInCoordinate(new Point(x, y));
+      if(shapeIndex !== null) {
+        state.addCoordinate(x, y);
+        state.setSelectedShape(shapeIndex);
+        state.setIsMove(true);
       }
+    }
+    else if (state.getCoordinatesLength() > 1){
+      state.moveShape(state.selectedShape, state.coordinates[state.getCoordinatesLength()-2], state.coordinates[state.getCoordinatesLength()-1]);
+      state.setSelectedShape(null);
+      state.drawAll();
       state.setIsMove(false);
       state.setCoordinates([]);
     }
   } 
   else if (state.mode === mode.SCALE) {
-    let scalePoint = scalePointRange.value;
     let shapeIndex = state.getIndexOfShapeInCoordinate(new Point(x, y));
+    let scalePoint = scalePointRange.value;
     state.shapeList[shapeIndex].scaleMatrix(scalePoint);
     state.drawAll();
   } 
@@ -115,7 +115,12 @@ canvas.addEventListener("mousemove", (e) => {
     }
   }
   else if (state.mode === mode.MOVE) {
-    //
+    if (state.selectedShape !== null) {
+      state.drawAll();
+      let { x, y } = state.getCursorCoordinate(e);
+      state.addCoordinate(x, y);
+      state.moveShape(state.selectedShape, state.coordinates[state.getCoordinatesLength()-2], state.coordinates[state.getCoordinatesLength()-1]);
+    }
   }
 });
 

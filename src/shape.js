@@ -93,8 +93,18 @@ class Shape {
 
     if(n === 2) {
       let m = (this.points[1].y - this.points[0].y) / (this.points[1].x - this.points[0].x);
-      let c = this.points[1].y - (m * this.points[1].x);
-      return (y - (m * x + c) < 1e-6);
+      let f = (y - this.points[1].y) - (m * (x - this.points[1].x));
+      let boundY = this.points[1].y > this.points[0].y ? (
+        this.points[1].y > y && this.points[0].y < y
+      ) : (
+        this.points[0].y > y && this.points[1].y < y
+      );
+      let boundX = this.points[1].x > this.points[0].x ? (
+        this.points[1].x > x && this.points[0].x < x
+      ) : (
+        this.points[0].x > x && this.points[1].x < x
+      );
+      return (f < 1e-6 && boundX && boundY);
     }
     for (let i = 0, j = n-1; i < n; j = i++) {
       let pointXi = this.points[i].x;

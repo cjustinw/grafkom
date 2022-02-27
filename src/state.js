@@ -4,6 +4,7 @@ class State {
     this.coordinates = [];
     this.isDrawing = false;
     this.isMove = false;
+    this.selectedShape = null;
     this.mode = "draw"
     this.shape = Line;
     this.shapeColor = new Color(1, 1, 1);
@@ -40,6 +41,10 @@ class State {
     this.isDrawing = isDrawing;
     this.shapeColor = shapeColor;
     this.backgroundColor = backgroundColor;
+  }
+
+  setSelectedShape(index) {
+    this.selectedShape = index;
   }
 
   addCoordinate(x, y) {
@@ -79,6 +84,14 @@ class State {
 
   setCoordinates(coordinates) {
     this.coordinates = coordinates;
+  }
+
+  moveShape(index, src, dest) {
+    if(index !== null) {
+      let distX = dest.x - src.x;
+      let distY = dest.y - src.y;
+      this.shapeList[index].move(distX, distY);
+    }
   }
 
   getCoordinatesLength() {
@@ -141,15 +154,5 @@ class State {
       }
     }
     // return nearestShape;
-  }
-
-  getIndexOfShapeInCoordinate(point) {
-    let result = null;
-    this.shapeList.forEach((shape, index) => {
-      if (shape.isPointInside(point)) {
-        result = index;
-      }
-    });
-    return result;
   }
 }
