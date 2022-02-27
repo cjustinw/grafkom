@@ -85,8 +85,15 @@ canvas.addEventListener("click", (e) => {
     state.drawAll();
   } 
   else if (state.mode === mode.COLOR){
-    state.getNearestPointColor(e);
-    state.drawAll();
+      let shapeIndex = state.getIndexOfShapeInCoordinate(new Point(x, y));
+      var color1 = parseInt(document.getElementById('color-point').value.substr(1, 6),16,)
+      color1 = [Math.floor(color1 / 65536) / 255,
+      Math.floor((color1 % 65536) / 256) / 255,
+      (color1 % 256) / 255,];
+  
+      var color2 = new Color(color1[0], color1[1], color1[2]);
+      state.shapeList[shapeIndex].setColor(color2);
+      state.drawAll();
   }
 });
 
