@@ -1,3 +1,5 @@
+![](https://github.com/cjustinw/grafkom/blob/main/test/DrawApp.png)
+
 ## Description
 WebGL App for drawing shapes
 
