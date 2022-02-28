@@ -1,10 +1,10 @@
-# Description
+## Description
 WebGL App for drawing shapes
 
-# How to Use
+## How to Use
 Open ```src/index.html``` file in browser
 
-# Contributors
+## Contributors
 | NIM      |Nama                          |
 | ---------| ---------------------------- |
 | 13519006 | Christopher Justine William  |
